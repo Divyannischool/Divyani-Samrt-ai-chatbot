@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart AI Chatbot</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a, #111827, #1e1b4b);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-container {
+    width: 95%;
+    max-width: 900px;
+    height: 90vh;
+    background: rgba(17, 24, 39, 0.95);
+    border: 1px solid #374151;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #374151;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#6366f1,#8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+}
+
+.logo h2 {
+    font-size: 20px;
+}
+
+.status {
+    color: #22c55e;
+    font-size: 13px;
+}
+
+.clear-btn {
+    background: #374151;
+    color: white;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Chat */
+.chat-box {
+    flex: 1;
+    padding: 25px;
+    overflow-y: auto;
+}
+
+.message {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.bubble {
+    max-width: 75%;
+    padding: 14px 17px;
+    border-radius: 17px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.bot .bubble {
+    background: #1f2937;
+    border-bottom-left-radius: 5px;
+}
+
+.user .bubble {
+    background: linear-gradient(135deg,#4f46e5,#7c3aed);
+    border-bottom-right-radius: 5px;
+}
+
+/* Welcome */
+.welcome {
+    text-align: center;
+    margin-top: 15%;
+}
+
+.welcome h1 {
+    font-size: 34px;
+    margin-bottom: 10px;
+}
+
+.welcome p {
+    color: #9ca3af;
+    margin-bottom: 25px;
+}
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.suggestions button {
+    background: #1f2937;
+    border: 1px solid #374151;
+    color: white;
+    padding: 11px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.suggestions button:hover {
+    background: #374151;
+}
+
+/* Input */
+.input-area {
+    padding: 18px;
+    border-top: 1px solid #374151;
+}
+
+.input-box {
+    display: flex;
+    gap: 10px;
+    background: #111827;
+    border: 1px solid #374151;
+    padding: 8px;
+    border-radius: 15px;
+}
+
+#messageInput {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 10px;
+    font-size: 15px;
+}
+
+.send-btn {
+    width: 48px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg,#6366f1,#8b5cf6);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.send-btn:hover {
+    opacity: .85;
+}
+
+.typing {
+    color: #9ca3af;
+    font-size: 13px;
+    margin: 5px 0 15px;
+}
+
+/* Mobile */
+@media(max-width:600px) {
+    .chat-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .bubble {
+        max-width: 88%;
+    }
+
+    .welcome h1 {
+        font-size: 27px;
+    }
+
+    .status {
+        display: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-container">
+
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🤖</div>
+            <div>
+                <h2>Smart AI</h2>
+                <div class="status">● Online</div>
+            </div>
+        </div>
+
+        <button class="clear-btn" onclick="clearChat()">
+            New Chat
+        </button>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+
+        <div class="welcome" id="welcome">
+            <h1>👋 Hello!</h1>
+            <p>I'm your Smart AI Assistant. How can I help you?</p>
+
+            <div class="suggestions">
+                <button onclick="quickMessage('Explain Artificial Intelligence')">
+                    🤖 Explain AI
+                </button>
+
+                <button onclick="quickMessage('Write a beautiful website')">
+                    💻 Write Code
+                </button>
+
+                <button onclick="quickMessage('Give me a study plan')">
+                    📚 Study Plan
+                </button>
+
+                <button onclick="quickMessage('Tell me an interesting fact')">
+                    💡 Interesting Fact
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="input-area">
+
+        <div class="input-box">
+            <input
+                type="text"
+                id="messageInput"
+                placeholder="Message Smart AI..."
+                autocomplete="off"
+            >
+
+            <button class="send-btn" onclick="sendMessage()">
+                ➤
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const input = document.getElementById("messageInput");
+const chatBox = document.getElementById("chatBox");
+const welcome = document.getElementById("welcome");
+
+function addMessage(text, type) {
+
+    if (welcome) {
+        welcome.style.display = "none";
+    }
+
+    const message = document.createElement("div");
+    message.className = "message " + type;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+
+    message.appendChild(bubble);
+    chatBox.appendChild(message);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function botReply(message) {
+
+    let reply = "";
+
+    if (message.toLowerCase().includes("hello") ||
+        message.toLowerCase().includes("hi")) {
+
+        reply = "Hello! 👋 I'm Smart AI. How can I help you today?";
+    }
+
+    else if (message.toLowerCase().includes("ai")) {
+
+        reply = "Artificial Intelligence (AI) is technology that allows computers to learn, understand information and perform tasks that normally require human intelligence. 🤖";
+    }
+
+    else if (message.toLowerCase().includes("website")) {
+
+        reply = "Sure! 💻 I can help you create modern websites using HTML, CSS and JavaScript.";
+    }
+
+    else if (message.toLowerCase().includes("study")) {
+
+        reply = "📚 A simple study plan:\n\n1. Choose your topic\n2. Study for 45 minutes\n3. Take a 10-minute break\n4. Practice questions\n5. Revise before sleeping.";
+    }
+
+    else {
+
+        reply = "That's interesting! 😊 In the full version, I can connect this chatbot to Groq AI so that it can generate intelligent answers to almost any question.";
+    }
+
+    setTimeout(() => {
+        addMessage(reply, "bot");
+    }, 700);
+}
+
+function sendMessage() {
+
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    addMessage(message, "user");
+
+    input.value = "";
+
+    botReply(message);
+}
+
+function quickMessage(message) {
+    input.value = message;
+    sendMessage();
+}
+
+function clearChat() {
+    chatBox.innerHTML = "";
+
+    const newWelcome = document.createElement("div");
+    newWelcome.className = "welcome";
+    newWelcome.id = "welcome";
+
+    newWelcome.innerHTML = `
+        <h1>👋 Hello!</h1>
+        <p>I'm your Smart AI Assistant. How can I help you?</p>
+
+        <div class="suggestions">
+            <button onclick="quickMessage('Explain Artificial Intelligence')">
+                🤖 Explain AI
+            </button>
+
+            <button onclick="quickMessage('Write a beautiful website')">
+                💻 Write Code
+            </button>
+
+            <button onclick="quickMessage('Give me a study plan')">
+                📚 Study Plan
+            </button>
+
+            <button onclick="quickMessage('Tell me an interesting fact')">
+                💡 Interesting Fact
+            </button>
+        </div>
+    `;
+
+    chatBox.appendChild(newWelcome);
+}
+
+input.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        sendMessage();
+    }
+});
+
+</script>
+
+</body>
+</html>
